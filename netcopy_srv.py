@@ -9,9 +9,7 @@ class SimpleTCPSelectServer:
   def __init__(self, srv_ip, srv_port, chsum_srv_ip, chsum_srv_port, file_id, file_path):
     self.server = self.setupServer(srv_ip, srv_port)
     self.__chsumAddress = (chsum_srv_ip, chsum_srv_port)
-    # Sockets from which we expect to read
     self.inputs = [ self.server ]
-    # Wait for at least one of the sockets to be ready for processing
     self.timeout=20
     self.__file_id = file_id
     self.__file_path = file_path
@@ -24,18 +22,15 @@ class SimpleTCPSelectServer:
     server.setblocking(0)
     server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     
-    # Bind the socket to the port
     server_address = (addr, port)
     server.bind(server_address)
     
-    # Listen for incoming connections
     server.listen(5)
     return server
 
   def handleNewConnection(self, sock):
-    # A "readable" server socket is ready to accept a connection
     connection, client_address = sock.accept()
-    connection.setblocking(0)	# or connection.settimeout(1.0)    
+    connection.setblocking(0)
     self.inputs.append(connection)
 
   def handleDataFromClient(self, sock):
@@ -80,7 +75,6 @@ class SimpleTCPSelectServer:
         readable, writable, exceptional = select.select(self.inputs, [], self.inputs, self.timeout)
     
         if not (readable or writable or exceptional):
-            # timed out, do some other work here
             continue
 
         self.handleInputs(readable)
