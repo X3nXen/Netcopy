@@ -11,10 +11,8 @@ class SimpleTCPSelectClient:
   def setupClient(self, srv_ip, srv_port, chsum_srv_ip, chsum_srv_port):
     server_address = (srv_ip, srv_port)
     self.chsum_server_address = (chsum_srv_ip, chsum_srv_port)
-    # Create a TCP/IP socket
     self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
-    # Connect the socket to the port where the server is listening
     self.serv = self.client.connect(server_address)
 
   
